@@ -29,6 +29,7 @@
       }
       .go:hover { opacity: 0.9; }
       .note { margin-top: 1rem; min-height: 1.3rem; font-size: 0.9rem; color: #e0726a; line-height: 1.5; }
+      .gate-note { margin-top: 0.9rem; font-size: 0.82rem; color: #e0726a; line-height: 1.5; }
       .keybtn {
         position: fixed; bottom: 0.8rem; right: 0.8rem; font-size: 0.75rem; color: #9a9a9a;
         background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
@@ -78,8 +79,9 @@
         <h2>your API keys</h2>
         <p>
           vox is bring-your-own-key. keys are stored only in this browser and sent straight to the
-          provider with each request, so they never touch a server of ours.
+          provider with each request, so it never touches my server.
         </p>
+        <div class="gate-note" id="gateNote"></div>
         <label>Anthropic (Claude), required</label>
         <input id="anth" type="password" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" />
         <label>OpenAI (embeddings), for building a corpus</label>
@@ -96,7 +98,8 @@
       var gate = document.getElementById("gate"),
         anth = document.getElementById("anth"),
         oai = document.getElementById("oai"),
-        note = document.getElementById("note");
+        note = document.getElementById("note"),
+        gateNote = document.getElementById("gateNote");
       var hasKey = function () { try { return !!localStorage.getItem(AK); } catch (e) { return false; } };
       function openGate() {
         try { anth.value = localStorage.getItem(AK) || ""; oai.value = localStorage.getItem(EK) || ""; } catch (e) {}
@@ -113,8 +116,7 @@
           if (oai.value.trim()) localStorage.setItem(EK, oai.value.trim());
           else localStorage.removeItem(EK);
         } catch (e) {}
-        note.textContent = "";
-        closeGate();
+        gateNote.textContent = "couldn't reach the vox server, and that key looks invalid. vox is in a small private beta right now, so check back soon.";
       };
       gate.onclick = function (e) { if (e.target === gate && hasKey()) closeGate(); };
       document.getElementById("keybtn").onclick = openGate;
